@@ -1,4 +1,6 @@
 # Write your code below game_hash
+require 'pry'
+
 def game_hash
   {
     home: {
@@ -126,4 +128,100 @@ def game_hash
   }
 end
 
-# Write code here
+def get_player_details(player_name)
+  game_hash.each do |location, team_details|
+    players_array = team_details[:players]
+      players_array.each do |player_details|
+        if player_details[:player_name] == player_name
+          return player_details
+        end
+    end
+  end
+end
+
+def get_team_details(team_name)
+  game_hash.each do |location, team_details|
+    if team_details[:team_name] == team_name
+      return team_details
+    end
+  end
+end
+
+def num_points_scored(player_name)
+  player_details = get_player_details(player_name)
+     player_details[:points]
+end
+
+def shoe_size(player_name)
+  player_details = get_player_details(player_name)
+     player_details[:shoe]
+end
+
+def team_colors(team_name)
+  team_details = get_team_details(team_name)
+    team_details[:colors]
+end
+
+def team_names
+  team_names = []
+  game_hash.each do |location, team_details|
+    team_names << team_details[:team_name]
+  end
+  team_names
+end
+
+def player_numbers(team_name)
+  numbers = []
+  team_details = get_team_details(team_name)
+    team_details[:players].each do |detail, value|
+      numbers << detail[:number]
+    end
+  numbers
+end
+
+def player_stats(player_name)
+  get_player_details(player_name)
+end
+
+def big_shoe_rebounds
+  biggest_shoe = 0
+  rebounds = 0
+  game_hash.each do |location, team_details|
+    players_array = team_details[:players]
+    players_array.each do |player_details|
+      if player_details[:shoe] > biggest_shoe
+        biggest_shoe = player_details[:shoe]
+        rebounds = player_details[:rebounds]
+      end
+    end
+  end
+  rebounds
+end
+
+def winning_team
+  home_team_points = []
+  away_team_points = []
+  home_team_total = 0
+  away_team_total = 0
+  game_hash.each do |location, team_details|
+    if location == :home
+      players_array = team_details[:players]
+      players_array.each do |player_details|
+        home_team_points << player_details[:points]
+        home_team_total = home_team_points.reduce(0) {|sum, n| sum + n }
+      end
+    end
+    if location == :away
+      players_array = team_details[:players]
+      players_array.each do |player_details|
+        away_team_points << player_details[:points]
+        away_team_total = away_team_points.reduce(0) {|sum, n| sum + n }
+        end
+    end
+  end
+  home_team_total > away_team_total ? game_hash[:home][:team_name] : game_hash[:away][:team_name]
+end
+
+puts winning_team
+
+
